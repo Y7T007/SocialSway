@@ -217,7 +217,7 @@ text-align: center;
 
 <div class="contrat_3 block" >
 		
-		<h1>CONTRAT SIGNEE </h1>
+		<h1>CONTRAT NON SIGNEE </h1>
 	<?php
 		$conn = new PDO("mysql:host=localhost;port=3308;dbname=projet","root","");
 		$id = $_SESSION['id'];
