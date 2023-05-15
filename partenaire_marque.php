@@ -38,7 +38,7 @@ session_start();
 			grid-row: 8/ 12;
 			overflow: auto;
 		}
-		
+					
 		table {
 			border-collapse: collapse;
 			width: 100%;
@@ -125,14 +125,14 @@ session_start();
 
 	<div class="contrat_1 block" >
 		
-					<h1>TOUT CONTRAT</h1>
+					<h1>TOUT LES CONTRAT</h1>
 				<?php
 					$conn = new PDO("mysql:host=localhost;port=3308;dbname=projet","root","");
 					$id = $_SESSION['id'];
 				$stmt = $conn->prepare("SELECT c.id_contrat,m.*
-										FROM marque m
-										INNER JOIN contrat c ON m.id = c.id_marque
-										WHERE c.id_influenceur = :id");
+										FROM influencer m
+										INNER JOIN contrat c ON m.id = c.id_influenceur
+										WHERE c.id_marque = :id");
 				$stmt->bindValue(':id', $_SESSION['id']);
 				$stmt->execute();
 
@@ -141,7 +141,7 @@ session_start();
 
 				<table>
 					<tr>
-						<th>LOGO</th>
+						<th>IMAGE</th>
 						<th>NAME</th>
 						<th>EMAIL</th>
 						<th>DOMAIN</th>
@@ -151,19 +151,19 @@ session_start();
 
 					<?php while ($row = $stmt->fetch()): ?>
 						<tr>
-							<td><img src="image/<?php echo $row['logo']; ?>" width="100px"></td>
+							<td><img src="image/<?php echo $row['imagee']; ?>" width="100px"></td>
 							<td><?php echo $row['nom']; ?></td>
 							<td><?php echo $row['email']; ?></td>
 							<td><?php echo $row['domaine']; ?></td>
 							<td><a href="marque_profil_p.php?id=<?php echo $row['id']; ?>"><button>Profil</button></a></td>
-							<td><a href="see_contrat_influenceur.php?id_contrat=<?php echo $row['id_contrat']; ?>&type=inf"><button>contrat</button></a></td>
+							<td><a href="see_contrat_influenceur.php?id_contrat=<?php echo $row['id_contrat']; ?>&type=marque"><button>contrat</button></a></td>
 						</tr>
 					<?php endwhile; ?>
 
 				</table>
 
 				<?php if ($stmt->rowCount() === 0): ?>
-					<p>Aucune marque n'a envoyé de contrat pour le moment.</p>
+					<p>VOUS N'AVEZ SIGNEE AUCUNE CONTRAT POUR LE MOMENT </p>
 				<?php endif; ?>
 
      </div>
@@ -171,14 +171,14 @@ session_start();
 
 	 <div class="contrat_2 block" >
 		
-		<h1>CONTRAT NON SIGNEE </h1>
+		<h1>CONTRAT NON ACCEPTÉE </h1>
 	<?php
 		$conn = new PDO("mysql:host=localhost;port=3308;dbname=projet","root","");
 		$id = $_SESSION['id'];
 	$stmt = $conn->prepare("SELECT c.id_contrat,m.*
-							FROM marque m
-							INNER JOIN contrat c ON m.id = c.id_marque
-							WHERE c.id_influenceur = :id AND (c.signature_influenceur IS NULL OR c.signature_influenceur = '')");
+							FROM influencer m
+							INNER JOIN contrat c ON m.id = c.id_influenceur
+							WHERE c.id_marque = :id AND (c.signature_influenceur IS NULL OR c.signature_influenceur = '')");
 	$stmt->bindValue(':id', $_SESSION['id']);
 	$stmt->execute();
 
@@ -197,12 +197,12 @@ session_start();
 
 		<?php while ($row = $stmt->fetch()): ?>
 			<tr>
-				<td><img src="image/<?php echo $row['logo']; ?>" width="100px"></td>
+				<td><img src="image/<?php echo $row['imagee']; ?>" width="100px"></td>
 				<td><?php echo $row['nom']; ?></td>
 				<td><?php echo $row['email']; ?></td>
 				<td><?php echo $row['domaine']; ?></td>
 				<td><a href="marque_profil_p.php?id=<?php echo $row['id']; ?>"><button>Profil</button></a></td>
-				<td><a href="see_contrat_influenceur.php?id_contrat=<?php echo $row['id_contrat']; ?>&type=inf"><button>contrat</button></a></td>
+				<td><a href="see_contrat_influenceur.php?id_contrat=<?php echo $row['id_contrat']; ?>&type=marque"><button>contrat</button></a></td>
 			</tr>
 		<?php endwhile; ?>
 
@@ -216,14 +216,14 @@ session_start();
 
 <div class="contrat_3 block" >
 		
-		<h1>CONTRAT SIGNEE </h1>
+		<h1>CONTRAT ACCEPTÉE</h1>
 	<?php
 		$conn = new PDO("mysql:host=localhost;port=3308;dbname=projet","root","");
 		$id = $_SESSION['id'];
 	$stmt = $conn->prepare("SELECT c.id_contrat,m.*
-							FROM marque m
-							INNER JOIN contrat c ON m.id = c.id_marque
-							WHERE c.id_influenceur = :id AND c.signature_influenceur != '' ");	
+							FROM influencer m
+							INNER JOIN contrat c ON m.id = c.id_influenceur
+							WHERE c.id_marque = :id AND c.signature_influenceur != '' ");	
 							$stmt->bindValue(':id', $_SESSION['id']);
 	$stmt->execute();
 
@@ -242,12 +242,12 @@ session_start();
 
 		<?php while ($row = $stmt->fetch()): ?>
 			<tr>
-				<td><img src="image/<?php echo $row['logo']; ?>" width="100px"></td>
+				<td><img src="image/<?php echo $row['imagee']; ?>" width="100px"></td>
 				<td><?php echo $row['nom']; ?></td>
 				<td><?php echo $row['email']; ?></td>
 				<td><?php echo $row['domaine']; ?></td>
 				<td><a href="marque_profil_p.php?id=<?php echo $row['id']; ?>"><button>Profil</button></a></td>
-				<td><a href="see_contrat_influenceur.php?id_contrat=<?php echo $row['id_contrat']; ?>&type=inf"><button>contrat</button></a></td>
+				<td><a href="see_contrat_influenceur.php?id_contrat=<?php echo $row['id_contrat']; ?>&type=marque"><button>contrat</button></a></td>
 			</tr>
 		<?php endwhile; ?>
 
