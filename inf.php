@@ -57,8 +57,8 @@ if ( isset($_POST['email'])) {
                   $folder = "./image/" . $filename;
                   move_uploaded_file($tempname, $folder);
                   
-                  $sql = "INSERT INTO influencer (imagee, nom, prénom, datenaissance, email, gsm, adresse, genre, domaine, socialmedia, username, motdepasse) 
-                          VALUES (:imagee, :nom, :prenom, :datenaissance, :email, :gsm, :adresse, :genre, :domaine, :socialmedia, :username, :motdepasse)";
+                  $sql = "INSERT INTO influencer (imagee, nom, prénom, datenaissance, email, gsm, adresse, genre,Langue,Contient,followers, domaine, socialmedia, username, motdepasse) 
+                          VALUES (:imagee, :nom, :prenom, :datenaissance, :email, :gsm, :adresse, :genre,:Langue, :Contient ,:followers , :domaine, :socialmedia, :username, :motdepasse)";
                   
                   $st = $pdo->prepare($sql);
                   $st->bindParam(':imagee', $filename);
@@ -69,6 +69,9 @@ if ( isset($_POST['email'])) {
                   $st->bindParam(':gsm', $_POST['gsm']);
                   $st->bindParam(':adresse', $_POST['adresse']);
                   $st->bindParam(':genre', $_POST['genre']);
+                  $st->bindParam(':Langue', $_POST['Langue']);
+                  $st->bindParam(':Contient', $_POST['Contient']);
+                  $st->bindParam(':followers', $_POST['followers']);
                   $st->bindParam(':domaine', $_POST['domaine']);
                   $socialmedia = json_encode($_POST['socialmedia']);
                   $username = json_encode($_POST['username']);
@@ -103,6 +106,7 @@ if ( isset($_POST['email'])) {
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
         <title>Document</title>
     
   </head>
@@ -163,42 +167,59 @@ if ( isset($_POST['email'])) {
                 <option value="M"><b>M</b></option>
               </select>
             </div>
-            
             <div class="div10">
+              <label for="langue">Langue:</label>
+              <input type="text" name="Langue" placeholder="Entrez votre langue">
+            </div>
+            <div class="div11">
+              <label for="langue">Contient:</label>
+              <select name="Contient" name="contient" class="list">
+                <option value="l'Afrique">l'Afrique</option>
+                <option value="l'Amérique">l'Amérique</option>
+                <option value="l'Europe">l'Europe</option>
+                <option value=" l'Océanie"> l'Océanie</option>
+                <option value="l'Asie">l'Asie</option>
+              </select>
+            </div>
+            
+            <div class="div12">
               <label for="domaine">Domaine <span>*</span>:</label>
               <input type="text" name="domaine" required placeholder="entrez votre domaine">
             </div>
-            <div class="div11">
+            <div class="div13">
+              <label for="domaine">Followers:</label>
+              <input type="text" name="followers" required placeholder="le nombre moyenne des followers">
+            </div>
+            <div class="div14">
               <label for="password">Le mot de passe <span>*</span>:</label>
               <input type="password" name="password" id="password" required placeholder="entrez votre mot de passe">
+              <i class="far fa-eye" id="togglePassword"></i>
             </div>
 
-            <div class="div12">
-              <label for="passwordconfr">Confirmer votre mot de passe <span>*</span>:</label>
+            <div class="div15">
+              <label for="passwordconfr">Confirmer <span>*</span>:</label>
               <input type="password" id="passwordconfr" name="passwordconfr" placeholder="confirmer votre mot de passe">
+              <i class="far fa-eye" id="toggleConfirmPassword"></i>
             </div>
-            <div class="div13">
-              <br>
+            <div class="div16">
+             
 
-                  <label for="socialmedia">Les réseaux sociaux : </label><br>
-                  <div id="socialm">
-                      <div class="socialmediass">
-                            <select name="socialmedia[]" class="list">
-                              <option value="Instagram">Instagram</option>
-                              <option value="Facebook">Facebook</option>
-                              <option value="Twitter">Twitter</option>
-                              <option value="linkedin">linkedin</option>
-                            </select>
-                            <input type="text" name="username[]" placeholder="entrez votre username">  
-                            <button type="button" id="ajoute_compte" >Ajouter</button><br>
-                            
-                      </div> 
-                          
-                  </div>              
-                        
-            </div>
+                <div id="socialm">
+                    <label for="socialmedia">Les réseaux sociaux :</label><br>
+                    <div class="socialmediass">
+                      <select name="socialmedia[]" class="list">
+                        <option value="Instagram">Instagram</option>
+                        <option value="Facebook">Facebook</option>
+                        <option value="Twitter">Twitter</option>
+                      </select>
+                      <input type="text" name="username[]" placeholder="entrez votre username">
+                      <input type="submit" id="ajoute_compte" value="   Ajouter">
+                 </div>
+              </div>
+       
+             </div>
               
-            <div class="div14">
+            <div class="div17">
                 <input type="submit" class="btn" id="submitBtn" value="    s'incrire" >
               
             </div>
@@ -261,6 +282,25 @@ function validatePassword(){
 
 password.onchange = validatePassword;
 confirm_password.onkeyup = validatePassword;
+
+const togglePassword = document.querySelector('#togglePassword');
+const toggleConfirmPassword = document.querySelector('#toggleConfirmPassword');
+
+togglePassword.addEventListener('click', function (e) {
+  // toggle the type attribute
+  const passwordType = password.getAttribute('type') === 'password' ? 'text' : 'password';
+  password.setAttribute('type', passwordType);
+  // toggle the eye slash icon
+  this.classList.toggle('fa-eye-slash');
+});
+
+toggleConfirmPassword.addEventListener('click', function (e) {
+  // toggle the type attribute
+  const confirmPasswordType = confirm_password.getAttribute('type') === 'password' ? 'text' : 'password';
+  confirm_password.setAttribute('type', confirmPasswordType);
+  // toggle the eye slash icon
+  this.classList.toggle('fa-eye-slash');
+});
 </script>
 
 

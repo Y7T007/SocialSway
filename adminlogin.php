@@ -13,19 +13,19 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     $password = $_POST['password'];
    
     try { 
-        $sql = "SELECT id , nom, motdepasse, imagee FROM influencer WHERE email = :email "; 
+        $sql = "SELECT id, nom, password, prenom FROM admin WHERE email = :email";
         $st = $pdo->prepare($sql);
         $st->bindParam(':email', $email);                      
         $st->execute(); 
         $data = $st->fetch();
         
         if ($data) {
-            if ($password === $data['motdepasse']) {
+            if ($password === $data['password']) {
                 $_SESSION['nom'] = $data['nom'];
                 $_SESSION['id'] = $data['id'];
-                $_SESSION['image'] = 'image/' . $data['imagee']; 
+                $_SESSION['prenom'] = $data['prenom']; 
                 
-                header("Location: home.php");
+                header("Location: admin.php");
                 exit();
             } else {
                 // si le mot de passe est incorrect, afficher un message d'erreur
@@ -40,41 +40,10 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     }
    
 
-
-
-// marque
-if (isset($_POST['email']) && isset($_POST['password'])) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    
-    try { 
-        $sql = "SELECT nom, motdepasse,logo,id FROM marque WHERE email = :email "; 
-        $st = $pdo->prepare($sql);
-        $st->bindParam(':email', $email);            
-        $st->execute(); 
-        $data = $st->fetch();
-
-        if ($data) {
-            if ($password === $data['motdepasse']) {
-                $_SESSION['nom'] = $data['nom'];
-                $_SESSION['id'] = $data['id'];
-                $_SESSION['email'] = $email;
-                $_SESSION['logo'] = 'image/' . $data['logo']; 
-                header("Location: homemarque.php");
-                exit();
-            } else {
-                // si le mot de passe est incorrect, afficher un message d'erreur
-                echo "<script>confirm(\"Mot de passe incorrect. Veuillez réessayer!!!\");</script>";
-            }
-        } else {
-            // utilisateur avec l'e-mail saisi introuvable dans la base de données, afficher un message d'erreur
-            echo "<script>confirm(\"Utilisateur non trouvé. Veuillez d'abord vous inscrire!!!\");</script>";
-        }
-    } catch(PDOException $e) {
-        die("Error: " . $e->getMessage());
-    }
 }
-}
+
+
+  
 ?>
 <!DOCTYPE html>
 <html>
@@ -87,14 +56,13 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
 
-
 <body>
 	
  <div class="container">
        <div class="image">
            <div class="front-box">
               
-              <form method="POST" action="login.php"> 
+              <form method="POST" action="adminlogin.php"> 
                      
                   <br>  <h2>Login</h2><br>
                   <div class="input-box">
@@ -107,10 +75,8 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
                     <i class="far fa-eye" id="togglePassword" ></i>
                   </div>
                   
-                 <button  class="btn">Se Connecter</button>
-                      <div class="grp">
-                         <a href="index.php">S'inscrir</a>
-                         
+                     <button  class="btn">Se Connecter</button>
+                      <div class="grp">    <a href="index.php">homepage  
                       </div>
               </form>
             </div>
@@ -132,4 +98,5 @@ togglePassword.addEventListener('click', function (e) {
 });
 
 </script>
+
 

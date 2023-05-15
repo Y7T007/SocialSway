@@ -1,88 +1,35 @@
 <?php
+// Démarre ou reprend une session existante
 session_start();
-$message = isset($_SESSION['message']) ? $_SESSION['message'] : "";
-unset($_SESSION['message']); 
-if (!isset($_SESSION['id'])) {
-  
-  header("Location: login.php");
 
-  exit();
-}
-try {
-  $pdo = new PDO("mysql:host=localhost;dbname=projet1;port=3308", "root", "");
-  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  $pdo->setAttribute(PDO::ATTR_CONNECTION_STATUS, true);
-} catch (PDOException $e) {
-  die("Error: could not connect" . $e->getMessage());
-}
-$user = null;
-$inf = null;
-
-if (isset($_SESSION['id'])) {
-  $id = $_SESSION['id'];
-
-  $st = $pdo->prepare("SELECT * FROM Marque WHERE id=:id");
-  $st->bindParam(':id', $id);
-  $st->execute();
-  $user = $st->fetch(PDO::FETCH_ASSOC);
+// Vérifie si le nom d'utilisateur est présent dans la session
+if(!isset($_SESSION['nom']) && !isset($_SESSION['prenom']) ) {
+    // Redirige l'utilisateur vers la page de connexion
+    header("Location: adminlogin.php");
+    // Arrête l'exécution du script actuel
+    exit();
 }
 
-if (isset($_SESSION['id'])) {
-  $id = $_SESSION['id'];
-
-  $st = $pdo->prepare("SELECT * FROM influencer WHERE id=:id");
-  $st->bindParam(':id', $id);
-  $st->execute();
-  $inf = $st->fetch(PDO::FETCH_ASSOC);
-}
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Page</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 </head>
 <body>
-<?php if ($user): ?>
-    <h2>Message from User: <?php echo $user['nom']; ?></h2>
-    <p>Email: <?php echo $user['email']; ?></p>
-    <p>NOM COMPLET De Représentant: <?php echo $user['nomderep'] . ' ' . $user['prenomderep']; ?></p>
+  
 
-<?php endif; ?>
-<?php if ($inf): ?>
-    <h2>Message from User: <?php echo $inf['nom']; ?></h2>
-    <p>Email: <?php echo $inf['email']; ?></p>
-    <p>NOM: <?php echo $inf['prénom']; ?></p>
-   
-<?php endif; ?>
+ <!-- Affiche un message de bienvenue avec le nom de l'utilisateur actuel -->
+ <h2>Bienvenue <?php echo $_SESSION['nom'] . "  ".  $_SESSION['prenom'];?></h2>
 
-<p><b>the message:</b> <?php echo $message; ?></p>
-<form method="POST" action="admin.php">
-    <button type="submit" name="delete">Confirmer</button>
-    <button type="submit" name="deny">Refuser</button>
-</form>
+ 
+
+
+
+<a href="demandedesup.php">les demandes</a><br>
+<a href="adminlogin.php">Deconexion</a>
 </body>
 </html>
-
-<?php
-if (isset($_POST['delete'])) {
-    $id = $_SESSION['id'];
-
-   
-    $st = $pdo->prepare("DELETE FROM Marque WHERE id=:id");
-    $st->bindParam(':id', $id);
-    $st->execute();
-    $st = $pdo->prepare("DELETE FROM influencer WHERE id=:id");
-    $st->bindParam(':id', $id);
-    $st->execute();
-
-    exit;
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deny'])) {
-    $user = null;
-    $inf = null;
-    exit;
-}
-?>

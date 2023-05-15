@@ -176,3 +176,26 @@ label span {
           a:hover {
             color:  rgba(95, 133, 187, 0.5);
           }
+          @media (max-width: 550px) {
+            .container {
+              overflow-x: auto;
+              overflow-y: hidden;
+              margin: 0 10px;
+              grid-template-columns: auto; 
+              grid-row-gap: 10px; 
+              grid-column-gap: 10px; 
+            }
+          
+            .container .parent div {
+              width: 100%;
+            }
+          
+            .container form {
+              margin-top: 0;
+            }
+          
+            .container form::-webkit-scrollbar {
+              display: none;
+            }
+          }
+          
