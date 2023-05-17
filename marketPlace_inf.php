@@ -1,62 +1,6 @@
 <!doctype html>
 <?php
 session_start();
-
-
-
-// Check if the session variables are set
-if (isset($_SESSION['user_type'], $_SESSION['id'])) {
-	if ($_SESSION['user_type'] != 'mar') {
-		if ($_SESSION['user_type'] == 'inf') {
-			header("Location: dashboard_inf.php");
-			exit;
-		} else {
-			echo '<script>
-                    alert("Vous n\'etes pas encore connecte !! connectez vous afin d\'acceder a votre dashboard");
-                    window.location.href = "login.php";
-                </script>';
-			exit;
-		}
-	}
-} else {
-	// Handle the case when the session variables are not set
-	// Redirect or display an error message
-	echo '<script>
-                    alert("Vous n\'etes pas encore connecte !! connectez vous afin d\'acceder a votre dashboard");
-            window.location.href = "login.php";
-        </script>';
-	exit;
-}
-
-
-$pdo = new PDO("mysql:host=localhost;port=3308;dbname=projet", "root", "");
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$user_id = $_SESSION['id'];
-
-
-$sql = "SELECT * FROM marque where id=" . $user_id;
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$infls = $stmt->fetchAll(PDO::FETCH_ASSOC);
-$infl = $infls[0];
-$user_rank = '';
-if ($infl['points'] < 1000) {
-	$user_rank = "🥉";
-} elseif ($infl['points'] >= 1000 && $infl['points'] < 2500) {
-	$user_rank = "🥈";
-} elseif ($infl['points'] >= 2500 && $infl['points'] < 4000) {
-	$user_rank = "🥇";
-} elseif ($infl['points'] >= 4000) {
-	$user_rank = "💎";
-}
-
-$sql = "select * from data_user where id_user=" . $user_id . " and type='mar'";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$datas_user = $stmt->fetchAll(PDO::FETCH_ASSOC);
-$data_user = $datas_user[0];
-
-
 ?>
 
 <html lang="en">
@@ -76,64 +20,48 @@ $data_user = $datas_user[0];
 <body>
 <div class="container">
 	<div class="menu_lateral">
-		<div class="ml_n">
-			<img src="img/icons/notifications-outline%20(1).svg" alt="n">
+				<div class="ml_n">
+					<img src="img/icons/notifications-outline%20(1).svg" alt="n">
+				</div>
+				<div class="ml_m">
+					<img src="img/icons/mail-open-outline.svg" alt="m">
+				</div>
+				<div class="ml_profil">
+					<img src="img/businessman-icon-vector-male-avatar-profile-image-profile-businessman-icon-vector-male-avatar-profile-image-182095609.jpg" alt="">
+				</div>
+				<div class="ml_name">
+					<h2>Nom Prenom</h2>
+				</div>
+				<div class="ml_list">
+					<ul>
+						<li>
+							<button>Dashboard</button>
+						</li>
+						<li>
+							<button>Profil</button>
+						</li>
+						<li>
+							<button onclick="window.location.href='chat.php'">Chat</button>
+						</li>
+						<li>
+							<button>Partenariat</button>
+						</li>
+						<li>
+							<button>Decouvrir</button>
+						</li>
+						<li>
+							<button>Cree...</button>
+						</li>
+						<li>
+							<button>Parametres</button>
+						</li>
+						<li>
+							<button>Deconnexion</button>
+						</li>
+						
+					</ul>
+				</div>
 		</div>
-		<div class="ml_m">
-			<img src="img/icons/mail-open-outline.svg" alt="m">
-		</div>
-		<div class="ml_profil">
-			<img src="<?php echo $infls[0]['logo'] ?>" alt="">
-
-		</div>
-		<div class="ml_name">
-			<h2> <?php echo $infls[0]['nom'].' '.$user_rank; ?> </h2>
-		</div>
-		<div class="ml_list">
-			<ul>
-				<li>
-					<button onclick="window.location.href='dashboard_mar.php'">
-						<ion-icon name="grid-outline"></ion-icon>
-						Dashboard</button>
-				</li>
-				<li>
-
-					<button onclick="window.location.href='profil_marque.php'">
-						<ion-icon name="person-outline"></ion-icon>Profil</button>
-				</li>
-				<li>
-
-					<button onclick="window.location.href='chat.php'">
-						<ion-icon name="chatbubbles-outline"></ion-icon>Chat</button>
-				</li>
-				<li>
-
-					<button onclick="window.location.href='partenaire_marque.php'">
-						<ion-icon name="document-text-outline"></ion-icon>Partenariat</button>
-				</li>
-				<li>
-
-					<button onclick="window.location.href='marketPlace.php'">
-						<ion-icon name="person-add-outline"></ion-icon>Decouvrir</button>
-				</li>
-				<li>
-
-					<button onclick="window.location.href='add_todo.php'">
-						<ion-icon name="create-outline"></ion-icon>Cree...</button>
-				</li>
-				<li>
-
-					<button>
-						<ion-icon name="settings-outline"></ion-icon>Parametres</button>
-				</li>
-				<li>
-					<button onclick="window.location.href = 'logout.php';">
-						<ion-icon name="log-out-outline"></ion-icon>Deconnexion</button>
-				</li>
-
-			</ul>
-		</div>
-	</div>
 	<div class="header">
 		<h1>LOGO</h1>
 	</div>
@@ -176,77 +104,6 @@ $data_user = $datas_user[0];
 						</label>
 					</fieldset>
 
-					<fieldset>
-						<legend style="padding: 25px"> <h4>Followers :</h4></legend>
-						<label>
-							<input type="radio" name="followers" value="<1000">
-							&lt;1000
-						</label>
-						<label>
-							<input type="radio" name="followers" value=">1000 and <10000">
-							&gt;1000 and &lt;10000
-						</label>
-						<label>
-							<input type="radio" name="followers" value=">10000 and <100000">
-							&gt;10000 and &lt;100000
-						</label>
-						<label>
-							<input type="radio" name="followers" value="+1000000">
-							+1000000
-						</label>
-					</fieldset>
-
-					<fieldset>
-						<legend style="padding: 25px"> <h4>Zone :</h4></legend>
-						<label>
-							<input type="radio" name="zone" value="Afrique">
-							Afrique
-						</label>
-						<label>
-							<input type="radio" name="zone" value="Europe">
-							Europe
-						</label>
-						<label>
-							<input type="radio" name="zone" value="Asie">
-							Asie
-						</label>
-						<label>
-							<input type="radio" name="zone" value="Amerique">
-							Amerique
-						</label>
-					</fieldset>
-
-					<fieldset>
-						<legend style="padding: 25px"> <h4>Langue :</h4></legend>
-						<label>
-							<input type="radio" name="language" value="Anglais">
-							English
-						</label>
-						<label>
-							<input type="radio" name="language" value="Chinois">
-							Chinois
-						</label>
-						<label>
-							<input type="radio" name="language" value="Espagnol">
-							Spanish
-						</label>
-						<label>
-							<input type="radio" name="language" value="Francais">
-							French
-						</label>
-						<label>
-							<input type="radio" name="language" value="Arabe">
-							Arabic
-						</label>
-						<label>
-							<input type="radio" name="language" value="Portugais">
-							Portuguese
-						</label>
-						<label>
-							<input type="radio" name="language" value="Allemand">
-							German
-						</label>
-					</fieldset>
 					<button class="anuller_filtres" style="margin-top: 25px;height: 30px" onclick="location.reload()">Annuler Tous les filtres  </button>
 
 				
@@ -260,7 +117,7 @@ $data_user = $datas_user[0];
 			<div class="results">
 				
 			<ul>
-				<?php include("get_infl_market.php"); ?>
+				<?php include("get_brands_market.php"); ?>
 			
 			
 			
@@ -357,7 +214,7 @@ $data_user = $datas_user[0];
 	function submitForm(influencerId, type) {
 		// Create the form element
 		var form = document.createElement('form');
-		form.action = 'follow.php';
+		form.action = 'follow_inf.php';
 		form.method = 'POST';
 
 		// Create the hidden input fields

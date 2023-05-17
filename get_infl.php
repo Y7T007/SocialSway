@@ -1,6 +1,10 @@
 <?php
 
 $user_id = $_SESSION['id'];
+$recever_id = $_SESSION['receiver_id'];
+
+$typeS = $_SESSION['user_type'];
+$typeR = $_SESSION['receiver_type'];
 
 
 // connect to the database
@@ -16,11 +20,11 @@ $stmt->execute();
 $infls = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-$_SESSION['receiver']=$infls[0]['id'];
-foreach ($infls as $infl) {
-	if ($infl['id']!= $user_id){
 
-	echo '<li class="listi" onclick="changeVariable('.$infl['id'].',\'inf\')"><div class="div1"> </div>
+foreach ($infls as $infl) {
+	if (!($typeS=='inf' && $infl['id']== $user_id)){
+
+	echo '<li class="listi" onclick="changeVariable('.$infl['id'].',\'inf\')"><div class="div1"><img src="'.$infl['imagee'].'" alt="" onerror="this.src=\'img/images.jpeg\'"> </div>
 <div class="div2"> '.$infl['nom'].' '.$infl['prenom'].'  </div></li>';
 	}
 }

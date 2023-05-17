@@ -2,7 +2,7 @@
 session_start();
 
 try {
-  $pdo = new PDO("mysql:host=localhost;dbname=projet1;port=3308","root","");
+  $pdo = new PDO("mysql:host=localhost;dbname=projet;port=3308","root","");
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   $pdo->setAttribute(PDO::ATTR_CONNECTION_STATUS, true);
 }catch(PDOException $e){
@@ -23,9 +23,10 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
             if ($password === $data['motdepasse']) {
                 $_SESSION['nom'] = $data['nom'];
                 $_SESSION['id'] = $data['id'];
-                $_SESSION['image'] = 'image/' . $data['imagee']; 
-                
-                header("Location: home.php");
+	            $_SESSION['user_type']='inf';
+                $_SESSION['image'] = 'image/' . $data['imagee'];
+
+	            header("Location: dashboard_inf.php");
                 exit();
             } else {
                 // si le mot de passe est incorrect, afficher un message d'erreur
@@ -58,9 +59,10 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
             if ($password === $data['motdepasse']) {
                 $_SESSION['nom'] = $data['nom'];
                 $_SESSION['id'] = $data['id'];
+	            $_SESSION['user_type']='mar';
                 $_SESSION['email'] = $email;
                 $_SESSION['logo'] = 'image/' . $data['logo']; 
-                header("Location: homemarque.php");
+                header("Location: dashboard_mar.php");
                 exit();
             } else {
                 // si le mot de passe est incorrect, afficher un message d'erreur
