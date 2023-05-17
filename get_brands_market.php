@@ -8,7 +8,11 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $user_id = $_SESSION['id'];
 
-$sql = "SELECT * FROM influencer";
+
+$typeS = $_SESSION['user_type'];
+$typeR = $_SESSION['receiver_type'];
+
+$sql = "SELECT * FROM marque";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $infls = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -16,7 +20,7 @@ $infls = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // loop through messages and print each in a new line
 foreach ($infls as $infl) {
-	if ($infl['id']!= $user_id){
+	if (!($typeS=='mar' && $infl['id']== $user_id)){
 		$user_rank='';
 		if ($infl['points']<1000){
 			$user_rank="🥉";
@@ -29,7 +33,7 @@ foreach ($infls as $infl) {
 		}
 		$html = '<li id="ress'.$infl['id'].'" class="search-item">
             <div class="mp_r_photo">
-                <img src="'.$infl['imagee'].'" alt="" onerror="this.src=\'img/images.jpeg\'">
+                <img src="'.$infl['logo'].'" alt="">
             </div>
             <div class="follow_b">
                 <button onclick="submitForm(\''.$infl['id'].'\', 1)">
@@ -37,17 +41,9 @@ foreach ($infls as $infl) {
                 </button>
             </div>
             <div class="mp_r_name">
-                <h3 style="display: flex;flex-direction: row">'.$infl['prenom'].' '.$infl['nom'].'&nbsp; <p id="rank">'.$user_rank.'</p></h3>
-                <h6 style="display: flex;flex-direction: row">Suivi par +<p id="followers">'.$infl['followers'].' </p> &nbsp; sur ses reseaux sociaux </h6>
+                <h3 style="display: flex;flex-direction: row">'.$infl['nom'].'&nbsp; <p id="rank">'.$user_rank.'</p></h3>
             </div>
-            <div class="mp_r_rating" style="text-align: center; flex-direction: column">
-                 <h4>Zone_Geo : </h4>
-                <p id="zone">'.$infl['continent'].'</p>
-            </div>
-            <div class="mp_r_info" style="text-align: center">
-                <h4>Langue :</h4>
-                <p id="language">'.$infl['langue'].'</p>
-            </div>
+      
         </li>';
 
 		echo $html;

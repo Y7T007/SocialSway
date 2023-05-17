@@ -1,12 +1,38 @@
 <?php
 session_start();
+
+// Check if the session variables are set
+if (isset($_SESSION['user_type'],$_SESSION['id'])) {
+	if ($_SESSION['user_type'] != 'mar') {
+		if ($_SESSION['user_type'] == 'inf') {
+			header("Location: dashboard_inf.php");
+			exit;
+		} else {
+			echo '<script>
+                    alert("Vous n\'etes pas encore connecte !! connectez vous afin d\'acceder a votre dashboard");
+                    window.location.href = "login.php";
+                </script>';
+			exit;
+		}
+	}
+} else {
+	// Handle the case when the session variables are not set
+	// Redirect or display an error message
+	echo '<script>
+                    alert("Vous n\'etes pas encore connecte !! connectez vous afin d\'acceder a votre dashboard");
+            window.location.href = "login.php";
+        </script>';
+	exit;
+}
+
+
 $pdo = new PDO("mysql:host=localhost;port=3308;dbname=projet","root","");
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $user_id = $_SESSION['id'];
-$_SESSION['receiver_type']='inf';
 
 
-$sql = "SELECT * FROM influencer where id=".$user_id;
+
+$sql = "SELECT * FROM marque where id=".$user_id;
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $infls = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -22,7 +48,7 @@ if ($infl['points']<1000){
 	$user_rank="💎";
 }
 
-$sql="select * from data_user where id_user=".$user_id;
+$sql="select * from data_user where id_user=".$user_id." and type='mar'";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $datas_user = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -34,9 +60,9 @@ $data_user = $datas_user[0];
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport"
-	      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 	<!--    IMPORTATION DES FONTS UTILLISE  -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -97,44 +123,59 @@ $data_user = $datas_user[0];
 				<img src="img/icons/mail-open-outline.svg" alt="m">
 		</div>
 		<div class="ml_profil">
-			<img src="img/businessman-icon-vector-male-avatar-profile-image-profile-businessman-icon-vector-male-avatar-profile-image-182095609.jpg" alt="">
+			<img src="<?php echo $infls[0]['logo'] ?>" alt="">
 
 		</div>
 		<div class="ml_name">
-			<h2> <?php echo $infls[0]['nom'].' '.$infls[0]['prenom'].' '.$user_rank; ?> </h2>
+			<h2> <?php echo $infls[0]['nom'].' '.$user_rank; ?> </h2>
 		</div>
 		<div class="ml_list">
 			<ul>
 				<li>
-					<button>Dashboard</button>
+					<button onclick="window.location.href='dashboard_mar.php'">
+						<ion-icon name="grid-outline"></ion-icon>
+						Dashboard</button>
 				</li>
 				<li>
-					<button onclick="window.location.href='profil_inf.php'">Profil</button>
+
+					<button onclick="window.location.href='profil_marque.php'">
+						<ion-icon name="person-outline"></ion-icon>Profil</button>
 				</li>
 				<li>
-					<button onclick="window.location.href='chat.php'">Chat</button>
+
+					<button onclick="window.location.href='chat.php'">
+						<ion-icon name="chatbubbles-outline"></ion-icon>Chat</button>
 				</li>
 				<li>
-					<button onclick="window.location.href='see_contrat_inf.php'">Partenariat</button>
+
+					<button onclick="window.location.href='partenaire_marque.php'">
+						<ion-icon name="document-text-outline"></ion-icon>Partenariat</button>
 				</li>
 				<li>
-					<button onclick="window.location.href='marketPlace.php'">Decouvrir</button>
+
+					<button onclick="window.location.href='marketPlace.php'">
+						<ion-icon name="person-add-outline"></ion-icon>Decouvrir</button>
 				</li>
 				<li>
-					<button>Cree...</button>
+
+					<button onclick="window.location.href='add_todo.php'">
+						<ion-icon name="create-outline"></ion-icon>Cree...</button>
 				</li>
 				<li>
-					<button>Parametres</button>
+
+					<button>
+						<ion-icon name="settings-outline"></ion-icon>Parametres</button>
 				</li>
 				<li>
-					<button>Deconnexion</button>
+					<button onclick="window.location.href = 'logout.php';">
+						<ion-icon name="log-out-outline"></ion-icon>Deconnexion</button>
 				</li>
 
 			</ul>
 		</div>
 	</div>
 	<div class="header block">
-		LOGO
+		<img src="ressources/img/Asset%201.png" alt="">
 	</div>
 	<div class="e1 block">
 		<div class="description">
@@ -188,7 +229,20 @@ $data_user = $datas_user[0];
 			<div class="descc">
 				<strong>
 					Libre :
-					<i style="text-align: right"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;35 influenceurs </i>
+					<i style="text-align: right"><?php
+						$sql = "SELECT COUNT(*) AS count FROM influencer WHERE disponible = 1";
+						$result = $pdo->query($sql);
+
+						if ($result->rowCount() > 0) {
+							// Fetch the count value
+							$row = $result->fetch(PDO::FETCH_ASSOC);
+							$count = $row["count"];
+
+							// Print the count on the screen
+							echo $count;
+						} else {
+							echo "0";
+						}?> Influ. </i>
 				</strong>
 
 				<div class="progress-bar">
@@ -211,8 +265,8 @@ $data_user = $datas_user[0];
 		<div class="description">
 			<div class="descc">
 				<strong>
-					Interactions
-					<i style="text-align: right"> &nbsp;&nbsp;&nbsp;&nbsp;<?php echo $data_user['visites_p'];?> Visites </i>
+					Interactions :
+					<i style="text-align: right"><?php echo $data_user['visites_p'];?> Visites </i>
 				</strong>
 
 				<div class="progress-bar">
@@ -254,39 +308,29 @@ $data_user = $datas_user[0];
 		<div class="list_offers">
 
 			<ul>
-				<li>
-					<div class="off_icn"><ion-icon name="newspaper-outline"></ion-icon></div>
 
-					<div class="date_offre">2022-01-01</div>
-					<div class="main_offre">
-						<h2>Marque1</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
-				<li>
-					<div class="off_icn"><ion-icon name="newspaper-outline"></ion-icon></div>
+				<?php
+				// Query to fetch the elements where disponibilite = 1
+				$sql = "SELECT * FROM influencer WHERE disponible = 1";
+				$result = $pdo->query($sql);
 
-					<div class="date_offre">2022-01-01</div>
-					<div class="main_offre">
-						<h2>Marque2</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
-				<li>
-					<div class="off_icn"><ion-icon name="newspaper-outline"></ion-icon></div>
+				if ($result->rowCount() > 0) {
+					while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+						echo '<li>';
+						echo '<div class="off_icn"><img style="border-radius: 50%" src="'.$row['imagee'].'" alt="" onerror="this.src=\'img/images.jpeg\'">
+</div>';
+						echo '<div class="main_offre">';
+						echo '<h2>'.$row["nom"] . ' ' . $row["prenom"].'</h2>';
+						echo '</div>';
+						echo '</li>';
+					}
+				} else {
+					echo "No elements found.";
+				}
+				?>
 
-					<div class="date_offre">2022-01-01</div>
-					<div class="main_offre">
-						<h2>Marque3</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
+
+
 			</ul>
 		</div>
 	</div>
@@ -302,11 +346,44 @@ $data_user = $datas_user[0];
 				<option value="a">Cet Annee</option>
 			</select>
 		</div>
+		<div class="list_offers">
+			<ul>
+				<?php
+				$servername = "localhost:3308";
+				$username = "root";
+				$password = "";
+				$dbname = "projet";
+				$conn = new mysqli($servername, $username, $password, $dbname);
+
+				
+				$sql = "SELECT * FROM influencer i inner join partenariats p on p.id_infl=i.id where p.id_marque=".$user_id.";";
+				$result = $conn->query($sql);
+				
+				// display tasks in a table
+				if ($result->num_rows > 0) {
+					while($row = $result->fetch_assoc()) {
+						echo '<li>
+					<div class="off_icn"><img style="border-radius: 50%" src="'.$row['imagee'].'" alt="" onerror="this.src=\'img/images.jpeg\'"></div>
+					<div class="main_offre">
+						<h2>'.$row["nom"].' '.$row["prenom"].'</h2>
+						<p>  Date de fin :<strong> '.$row['date_fin'].'</strong> </p>
+
+					</div>
+				</li>';
+					}
+				} else {
+					echo "<h4> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Vous n'avez aucun partenariat.</h4>";
+				}
+				?>
+			</ul>
+		</div>
+			
+
 	</div>
 	<div class="todo block">
 		<div class="todo_title">
 			<h2>
-				Vos travaux a faire :
+				Vos travaux en attente :
 			</h2>
 			<select id="s_offres">
 				<option value="m">Tous les travaux</option>
@@ -320,83 +397,22 @@ $data_user = $datas_user[0];
 				
 
 			<ul>
-				<li>
-					<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
+				<?php
 
-					<div class="date_offre">2022-01-01</div>
-					<div class="main_offre">
-						<h2>Travail1</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
-				<li>
-					<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
+				$sql = "SELECT * FROM todo_list WHERE id_mar =".$user_id." AND ASSIGNED=0";
+				$result = $conn->query($sql);
 
-					<div class="date_offre">2022-01-01</div>
-					<div class="main_offre">
-						<h2>Travail</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
-				<li>
-					<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-
-					<div class="date_offre">2022-01-01</div>
-					<div class="main_offre">
-						<h2>Travail</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
-				<li>
-					<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-					
-					<div class="date_offre">2022-01-01</div>
-					<div class="main_offre">
-						<h2>Travail</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
-				<li>
-					<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-					
-					<div class="date_offre">2022-01-01</div>
-					<div class="main_offre">
-						<h2>Travail</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
-				<li>
-					<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-					
-					<div class="date_offre">2022-01-01</div>
-					<div class="main_offre">
-						<h2>Travail</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
-				<li>
-					<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-					
-					<div class="date_offre">2022-01-01</div>
-					<div class="main_offre">
-						<h2>Travail</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
+				// display tasks in a table
+				if ($result->num_rows > 0) {
+					echo "<table><tr><th>Title</th><th>Tasks</th><th>Deadline</th></tr>";
+					while($row = $result->fetch_assoc()) {
+						echo "<tr><td>".$row["title"]."</td><td>".$row["tasks"]."</td><td>".$row["deadline"]."</td></tr>";
+					}
+					echo "</table>";
+				} else {
+					echo "Vous n'avez aucun travail a faire.";
+				}
+				?>
 			</ul>
 
 			</div>
@@ -441,83 +457,25 @@ center">
 				
 				
 				<ul>
-					<li>
-						<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-						
-						<div class="date_offre">2022-01-01</div>
-						<div class="main_offre">
-							<h2>Travail1</h2>
-							<p>
-								this is siis hkfjh dkjhflk fhjkd
-							</p>
-						</div>
-					</li>
-					<li>
-						<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-						
-						<div class="date_offre">2022-01-01</div>
-						<div class="main_offre">
-							<h2>Travail</h2>
-							<p>
-								this is siis hkfjh dkjhflk fhjkd
-							</p>
-						</div>
-					</li>
-					<li>
-						<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-						
-						<div class="date_offre">2022-01-01</div>
-						<div class="main_offre">
-							<h2>Travail</h2>
-							<p>
-								this is siis hkfjh dkjhflk fhjkd
-							</p>
-						</div>
-					</li>
-					<li>
-						<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-						
-						<div class="date_offre">2022-01-01</div>
-						<div class="main_offre">
-							<h2>Travail</h2>
-							<p>
-								this is siis hkfjh dkjhflk fhjkd
-							</p>
-						</div>
-					</li>
-					<li>
-						<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-						
-						<div class="date_offre">2022-01-01</div>
-						<div class="main_offre">
-							<h2>Travail</h2>
-							<p>
-								this is siis hkfjh dkjhflk fhjkd
-							</p>
-						</div>
-					</li>
-					<li>
-						<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-						
-						<div class="date_offre">2022-01-01</div>
-						<div class="main_offre">
-							<h2>Travail</h2>
-							<p>
-								this is siis hkfjh dkjhflk fhjkd
-							</p>
-						</div>
-					</li>
-					<li>
-						<div class="off_icn"><ion-icon name="checkbox-outline"></ion-icon></ion-icon></div>
-						
-						<div class="date_offre">2022-01-01</div>
-						<div class="main_offre">
-							<h2>Travail</h2>
-							<p>
-								this is siis hkfjh dkjhflk fhjkd
-							</p>
-						</div>
-					</li>
+					<?php
+					
+					$sql = "SELECT * FROM marque order by points asc";
+					$result = $conn->query($sql);
+					if ($result->num_rows > 0) {
+					while($row = $result->fetch_assoc()) {
+						echo '<li>
+					<div class="off_icn"><img src="' . $row['logo'] . '" alt=""></div>
+					<div class="date_offre">' . $row["points"] . '</div>
+					<div class="main_offre">
+						<h2>' . $row["nom"] . '</h2>
+											<p> Specifie sur : <strong> ' . $row["domaine"] . '</strong> </p>
+
+					</div>
+				</li>';
+					}} else {
+						echo "Vous n'avez aucun travail a faire.";
+					}
+					?>
 				</ul>
 			
 			</div>
@@ -534,9 +492,9 @@ center">
 
 			<ul>
 				<li>
-					<div class="off_icn"><ion-icon name="newspaper-outline"></ion-icon></div>
+					<div class="off_icn"><ion-icon name="invert-mode-outline"></ion-icon></div>
 					<div class="date_offre">
-						<button class="button">PARAMTERES</button>
+						<button class="button" onclick="toggleDarkMode()">PARAMTERES</button>
 
 					</div>
 
@@ -548,7 +506,7 @@ center">
 					</div>
 				</li>
 				<li>
-					<div class="off_icn"><ion-icon name="newspaper-outline"></ion-icon></div>
+					<div class="off_icn"><ion-icon name="person-outline"></ion-icon></div>
 
 					<div class="date_offre">
 						<button class="button ">Profil</button>
@@ -557,11 +515,12 @@ center">
 					</div>
 				</li>
 				<li>
-					<div class="off_icn"><ion-icon name="newspaper-outline"></ion-icon></div>
+					<div class="off_icn"><ion-icon name="chatbubbles-outline"></ion-icon></div>
 
 					<div class="date_offre">
-						<button class="button ">Chat</button>
-					</div>					<div class="main_offre">
+						<button clas.href='chat.php'">Chat</button>
+					</div>
+					<div s="button" onclick="window.locationclass="main_offre">
 						<h2>Voir vos messages</h2>
 
 					</div>
@@ -583,46 +542,21 @@ center">
 		<div class="list_offers">
 
 			<ul>
-				<li>
-					<div class="off_icn"><ion-icon name="newspaper-outline"></ion-icon></div>
-					<div class="date_offre">
-					<button class="button accept">Accept</button>
-					<button class="button decline">Decline</button>
-					</div>
-					
-					<div class="main_offre">
-						<h2>Marque1</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
-				<li>
-					<div class="off_icn"><ion-icon name="newspaper-outline"></ion-icon></div>
-					
-					<div class="date_offre">
-						<button class="button accept">Accept</button>
-						<button class="button decline">Decline</button>
-					</div>					<div class="main_offre">
-						<h2>Marque2</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
-				<li>
-					<div class="off_icn"><ion-icon name="newspaper-outline"></ion-icon></div>
-					
-					<div class="date_offre">
-						<button class="button accept">Accept</button>
-						<button class="button decline">Decline</button>
-					</div>					<div class="main_offre">
-						<h2>Marque3</h2>
-						<p>
-							this is siis hkfjh dkjhflk fhjkd
-						</p>
-					</div>
-				</li>
+				<?php
+				$sql = "SELECT * FROM influencer i inner join friendship f on f.id_mar=i.id where f.link = 1 and f.id_mar = ".$user_id.";";
+				$result = $conn->query($sql);
+				
+				// display tasks in a table
+				if ($result->num_rows > 0) {
+					echo "<table><tr><th>Nom</th><th>Domaine</th><th>Nb. Points</th></tr>";
+					while($row = $result->fetch_assoc()) {
+						echo "<tr><td>".$row["nom"]."</td><td>".$row["domaine"]."</td><td>".$row["points"]."</td></tr>";
+					}
+					echo "</table>";
+				} else {
+					echo "<h4> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Vous n'avez aucune invitation.</h4>";
+				}
+				?>
 			</ul>
 		</div>
 	</div>
@@ -653,15 +587,35 @@ center">
 		
 	</div>
 </div>
+<?php
+$sql = "SELECT * FROM data_user where id_user = ".$user_id." and type='".$_SESSION['user_type']."';";
+$result = $conn->query($sql);
 
+// encode data as a JSON object
+if ($result->num_rows > 0) {
+	$data = array();
+	while($row = $result->fetch_assoc()) {
+		$data[] = $row['revenue_1'];
+		$data[] = $row['revenue_2'];
+		$data[] = $row['revenue_3'];
+		$data[] = $row['revenue_4'];
+		$data[] = $row['revenue_5'];
+	}
+	$jsonData = json_encode($data);
+}
+
+// output as a JavaScript variable assignment
+echo "<script>var myData = $jsonData;</script>";
+
+?>
 
 
 <!--SCRIPTS-->
 <!--nous nous servirons d'une library qui offre le dessin d'un calendrier qui s'appelle le 'dycalendar.js' -->
 <!--cette library eat disponible sur "https://github.com/yusufshakeel/dyCalendarJS/blob/master/"-->
-<script src="/project/ressources/js/dycalendar.js"></script>
-<script src="/project/ressources/js/dycalendar.min.js"></script>
-<script src="/project/ressources/js/default.js"></script>
+<script src="/ressources/js/dycalendar.js"></script>
+<script src="/ressources/js/dycalendar.min.js"></script>
+<script src="/ressources/js/default.js"></script>
 <script>
 	dycalendar.draw({
 			target: '#dycalendar',
@@ -686,18 +640,31 @@ center">
 
 		// The data for our dataset
 		data: {
-			labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+			labels: ['March', 'April', 'May', 'June', 'July'],
 			datasets: [{
 				label: 'Vos Revenues',
 				backgroundColor: 'rgb(57,85,236)',
 				borderColor: '#5057ae',
-				data: [0, 10, 5, 2, 20, 30, 45]
+				data: myData
 			}]
 		},
 
 		// Configuration options go here
 		options: {}
 	});
+	function toggleDarkMode() {
+		var darkModeCSS = document.getElementById("dark-mode-css");
+		if (darkModeCSS) {
+			darkModeCSS.remove(); // remove the dark mode stylesheet
+		} else {
+			darkModeCSS = document.createElement("link");
+			darkModeCSS.setAttribute("rel", "stylesheet");
+			darkModeCSS.setAttribute("href", "ressources/css/test_dark_mode.css");
+			darkModeCSS.setAttribute("id", "dark-mode-css");
+			document.head.appendChild(darkModeCSS); // add the dark mode stylesheet
+		}
+	}
+
 </script>
 
 
