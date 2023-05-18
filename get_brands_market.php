@@ -10,7 +10,6 @@ $user_id = $_SESSION['id'];
 
 
 $typeS = $_SESSION['user_type'];
-$typeR = $_SESSION['receiver_type'];
 
 $sql = "SELECT * FROM marque";
 $stmt = $pdo->prepare($sql);

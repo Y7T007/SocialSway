@@ -130,10 +130,10 @@ text-align: center;
 				<?php
 					$conn = new PDO("mysql:host=localhost;port=3308;dbname=projet","root","");
 					$id = $_SESSION['id'];
-				$stmt = $conn->prepare("SELECT c.id_contrat,m.*
+				$stmt = $conn->prepare("SELECT c.id_partenariat,m.*
 										FROM marque m
-										INNER JOIN contrat c ON m.id = c.id_marque
-										WHERE c.id_influenceur = :id");
+										INNER JOIN partenariats c ON m.id = c.id_marque
+										WHERE c.id_infl = :id");
 				$stmt->bindValue(':id', $_SESSION['id']);
 				$stmt->execute();
 
@@ -157,7 +157,7 @@ text-align: center;
 							<td><?php echo $row['email']; ?></td>
 							<td><?php echo $row['domaine']; ?></td>
 							<td><a href="marque_profil_p.php?id=<?php echo $row['id']; ?>"><button>Profil</button></a></td>
-							<td><a href="see_contrat_influenceur.php?id_contrat=<?php echo $row['id_contrat']; ?>"><button>contrat</button></a></td>
+							<td><a href="see_contrat_influenceur.php?id_contrat=<?php echo $row['id_partenariat']; ?>"><button>contrat</button></a></td>
 						</tr>
 					<?php endwhile; ?>
 
@@ -176,10 +176,10 @@ text-align: center;
 	<?php
 		$conn = new PDO("mysql:host=localhost;port=3308;dbname=projet","root","");
 		$id = $_SESSION['id'];
-	$stmt = $conn->prepare("SELECT c.id_contrat,m.*
+	$stmt = $conn->prepare("SELECT c.id_partenariat,m.*
 							FROM marque m
-							INNER JOIN contrat c ON m.id = c.id_marque
-							WHERE c.id_influenceur = :id AND (c.signature_influenceur IS NULL OR c.signature_influenceur = '')");
+							INNER JOIN partenariats c ON m.id = c.id_marque
+							WHERE c.id_infl = :id AND (c.inf_sign IS NULL OR c.inf_sign = '')");
 	$stmt->bindValue(':id', $_SESSION['id']);
 	$stmt->execute();
 
@@ -203,7 +203,7 @@ text-align: center;
 				<td><?php echo $row['email']; ?></td>
 				<td><?php echo $row['domaine']; ?></td>
 				<td><a href="marque_profil_p.php?id=<?php echo $row['id']; ?>"><button>Profil</button></a></td>
-				<td><a href="see_contrat_inf.php?id_contrat=<?php echo $row['id_contrat'];?>"><button>contrat</button></a></td>
+				<td><a href="see_contrat_inf.php?id_contrat=<?php echo $row['id_partenariat'];?>"><button>contrat</button></a></td>
 			</tr>
 		<?php endwhile; ?>
 
@@ -221,10 +221,10 @@ text-align: center;
 	<?php
 		$conn = new PDO("mysql:host=localhost;port=3308;dbname=projet","root","");
 		$id = $_SESSION['id'];
-	$stmt = $conn->prepare("SELECT c.id_contrat,m.*
+	$stmt = $conn->prepare("SELECT c.id_partenariat,m.*
 							FROM marque m
-							INNER JOIN contrat c ON m.id = c.id_marque
-							WHERE c.id_influenceur = :id AND c.signature_influenceur != '' ");	
+							INNER JOIN partenariats c ON m.id = c.id_marque
+							WHERE c.id_infl = :id AND c.inf_sign != '' ");
 							$stmt->bindValue(':id', $_SESSION['id']);
 	$stmt->execute();
 
@@ -248,7 +248,7 @@ text-align: center;
 				<td><?php echo $row['email']; ?></td>
 				<td><?php echo $row['domaine']; ?></td>
 				<td><a href="marque_profil_p.php?id=<?php echo $row['id']; ?>"><button>Profil</button></a></td>
-				<td><a href="see_contrat_inf.php?id_contrat=<?php echo $row['id_contrat']; ?>"><button>contrat</button></a></td>
+				<td><a href="see_contrat_inf.php?id_contrat=<?php echo $row['id_partenariat']; ?>"><button>contrat</button></a></td>
 			</tr>
 		<?php endwhile; ?>
 

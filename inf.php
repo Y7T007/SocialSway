@@ -51,6 +51,7 @@ if ( isset($_POST['email'])) {
           if ($stmt->rowCount() > 0) {
               echo "<script>confirm(\"Cet e-mail est déjà pris. Veuillez utiliser une adresse e-mail différente!!!\");</script>";
           } else {
+
               try {
                   $filename = $_FILES["image"]["name"];
                   $tempname = $_FILES["image"]["tmp_name"];

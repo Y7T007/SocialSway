@@ -2,7 +2,7 @@
 session_start();
 
 try {
-  $pdo = new PDO("mysql:host=localhost;dbname=projet1;port=3308","root","");
+  $pdo = new PDO("mysql:host=localhost;dbname=projet;port=3308","root","");
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   $pdo->setAttribute(PDO::ATTR_CONNECTION_STATUS, true);
 }catch(PDOException $e){
@@ -22,10 +22,8 @@ if (isset($_POST['Confirmer']) && $_POST['confirmation'] === 'oui' && isset($_PO
   $message = $_POST['Demande'];
   $id = $_SESSION['id'];
   $_SESSION['message'] = $message;
-  echo "<p>Votre demande a été soumise avec succès. Merc!</p>";
-  echo '<a href="home.php">return</a>';
-  echo '<br>';
-  echo '<a href="index.php">Déconnexion</a>';
+  echo "<script>alert('Votre demande a été soumise avec succès. Merci!');window.location.href='dashboard_inf.php'</script>";
+
   
   exit;
 }

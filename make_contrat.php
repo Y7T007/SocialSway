@@ -125,7 +125,7 @@ session_start();
     <div>
 <label for="">MARQUE</label>
 <label for="">NOM :<?php echo $row_m['nom']; ?></label>
-<img class="photo" src="image/<?php echo $row_m['logo']; ?>"  width="100px">
+<img class="photo" src="<?php echo $row_m['logo']; ?>"  width="100px">
         
     </div>
     <br>
@@ -138,7 +138,7 @@ if ( $row_inf['imagee'] == '') {
 	echo "<img class='photo' src='img/businessman-icon-vector-male-avatar-profile-image-profile-businessman-icon-vector-male-avatar-profile-image-182095609.jpg' width='100px'> ";
 
 }else{
-	echo "<img class='photo' src='image/" . $row_inf["imagee"] . "' width='100px'>";
+	echo "<img class='photo' src='" . $row_inf["imagee"] . "' width='100px'>";
 }
 ?>
 </div>
@@ -242,7 +242,7 @@ if (isset($_POST['submit'])) {
           $folder_m = "./image/" . $sign_marque;
 
 
-          $sql = "INSERT INTO contrat (id_marque,id_influenceur,signature_marque, date_debut, date_fin, salaire, term) 
+          $sql = "INSERT INTO partenariats (id_marque,id_infl,mar_sign, date_debut, date_fin, salaire, termes) 
                   VALUES (:id_marque,:id_influenceur,:signature_marque, :date_debut, :date_fin, :salaire,:term)";
 
           $st = $pdo->prepare($sql);
@@ -261,9 +261,7 @@ if (isset($_POST['submit'])) {
             $st->execute();
 
           if (move_uploaded_file($tempname_marque, $folder_m)) {
-            
-            echo "Inscription réussie!";
-            header('Location:mareketPlace_marque.php');
+            header('Location: mareketPlace.php');
 
             exit();
           }

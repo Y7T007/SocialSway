@@ -25,9 +25,54 @@ session_start();
     <style>
         .revenus{
             grid-column: 3 / 9;
-            grid-row: 2 / 8;
+            grid-row: 2 / 5;
         }
-    </style>
+		.parent{
+			display: flex;
+			align-items: center;
+			margin-left: 100px;
+			flex-direction: row;
+			align-items: normal;
+  		}
+		  .parent_f{
+			display: flex;
+			width: 100%;
+			margin: 50px;
+			flex-direction: row;
+			gap: 140px;
+
+		}
+		.btn{
+          background-color: #4CAF50;
+          border: none; 
+          color: white;
+          padding: 12px 24px; 
+          text-align: center; 
+          text-decoration: none; 
+          display: inline-block;
+          font-size: 16px; 
+          cursor: pointer; 
+          border-radius: 4px;
+		  width: 90px;
+		  margin-left: 70%;
+        }
+		.liste{
+			margin-left: 70px;
+		}
+		label {
+  font-weight: bold;
+  margin-right: 20px;
+}
+.parent img{
+height: 200px;
+width: 200px;
+border-radius: 50%;
+margin-top: 50px;
+}
+p{
+	margin-left: 90px;
+}
+  </style>
 </head>
 <body>
 
@@ -86,7 +131,6 @@ session_start();
 	
 
 	<div class="revenus block" >
-		hello
         <?php
 $id = $_SESSION['id'];
 $conn = new PDO("mysql:host=localhost;port=3308;dbname=projet","root","");
@@ -101,46 +145,50 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
                         <div class='div2'>
                         <img src='image/<?php echo $result["imagee"]; ?>' width='100px'>          
                         </div>
+						<div class="parent_f">
+							<div class="d1">
                         <div class='div3'> 
-                        <label>NOM :</label> <?php echo $result["nom"]; ?>
+                        <label>NOM :</label> <p> <?php echo $result["nom"]; ?></p>
                         </div>
                         <div class='div3'> 
-                        <label>PRENOM :</label> <?php echo $result["prénom"]; ?>
+                        <label>PRENOM :</label>  <p><?php echo $result["prenom"]; ?></p>
                         </div>
                         <div class='div3'> 
-                        <label>EMAIL :</label> <?php echo $result["email"]; ?>
+                        <label>EMAIL :</label> <p> <?php echo $result["email"]; ?></p>
                         </div>
                         <div class='div3'> 
-                        <label>DATE DE NAISSANCE :</label> <?php echo $result["datenaissance"]; ?>
+                        <label>DATE DE NAISSANCE :</label> <p> <?php echo $result["datenaissance"]; ?></p>
                         </div>
                         <div class='div3'> 
-                        <label>GSM :</label> <?php echo $result["gsm"]; ?>
+                        <label>GSM :</label>  <p><?php echo $result["gsm"]; ?></p>
                         </div>
                         <div class='div3'> 
-                        <label>ADRESSE :</label> <?php echo $result["adresse"]; ?>
+                        <label>ADRESSE :</label>  <p><?php echo $result["adresse"]; ?></p>
                         </div>
                         <div class='div3'> 
-                        <label>GENRE :</label> <?php echo $result["genre"]; ?>
+                        <label>GENRE :</label>  <p><?php echo $result["genre"]; ?></p>
+                        </div>
+						</div>
+						<div class="d2">
+                        <div class='div3'> 
+                        <label>DOMAINE :</label>  <p><?php echo $result["domaine"]; ?></p>
                         </div>
                         <div class='div3'> 
-                        <label>DOMAINE :</label> <?php echo $result["domaine"]; ?>
+                        <label>CONTINENT :</label>  <p><?php echo $result["continent"]; ?></p>
                         </div>
                         <div class='div3'> 
-                        <label>CONTINENT :</label> <?php echo $result["continent"]; ?>
+                        <label>LANGUE :</label>  <p><?php echo $result["langue"]; ?></p>
                         </div>
                         <div class='div3'> 
-                        <label>LANGUE :</label> <?php echo $result["langue"]; ?>
+                        <label>FOLLOWERS :</label>  <p><?php echo $result["followers"]; ?></p>
                         </div>
                         <div class='div3'> 
-                        <label>FOLLOWERS :</label> <?php echo $result["followers"]; ?>
+                        <label>POINTS :</label>  <p><?php echo $result["points"]; ?></p>
                         </div>
+						
                         <div class='div3'> 
-                        <label>POINTS :</label> <?php echo $result["points"]; ?>
-                        </div>
-
-                        <div class='div3'> 
-  <label for='socialmedia'>SOCIAL MEDIA :</label>
-
+  <label for='socialmedia'>SOCIAL MEDIA :</label> <br>
+<div class="liste">
   <?php
     $socialmedia_values = json_decode($result['socialmedia'], true);
     $username_values = json_decode($result['username'], true);
@@ -152,15 +200,18 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
       // Display the social media account name and username in the desired format
       echo "<span class='account'>";
       echo $socialmedia . ' : ' . $username;
-      echo "</span>";
+      echo "</span>"; echo "<br>";
     }
   ?>
-      <br> <a href="edit_profil_influenceur.php">EDIT PROFIL</a> <br/>
+  	</div>
+
+  </div> </div>
 
 </div>
 
 
 </div>
+      <br> <a class="btn" href="edit_profil_influenceur.php">EDIT PROFIL</a> <br/>
 
 
 

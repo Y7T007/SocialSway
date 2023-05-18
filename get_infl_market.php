@@ -27,13 +27,16 @@ foreach ($infls as $infl) {
 		}elseif ($infl['points']>=4000 ){
 			$user_rank="💎";
 		}
-		$html = '<li id="ress'.$infl['id'].'" class="search-item">
+		$html = '<li  id="ress'.$infl['id'].'" class="search-item">
             <div class="mp_r_photo">
                 <img src="'.$infl['imagee'].'" alt="" onerror="this.src=\'img/images.jpeg\'">
             </div>
-            <div class="follow_b">
+            <div class="follow_b" style="display: flex;flex-direction: column; gap: 20px">
                 <button onclick="submitForm(\''.$infl['id'].'\', 1)">
                     Suivre
+                </button>
+                <button onclick="window.location.href=\'make_contrat.php?id_inf='.$infl['id'].'\'">
+                    Sign. Contrat
                 </button>
             </div>
             <div class="mp_r_name">
